@@ -1,0 +1,15 @@
+{
+  "name": "cryptolunch",
+  "version": "0.0.1",
+  "description": "Decentralized app for pooling payments",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "truffle": "^5.1.52"
+  }
+}
