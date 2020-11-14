@@ -3,11 +3,11 @@
 
 This is an ECS 189F project at UC Davis. 
 
-Collaborators:
+Collaborators:\
 Neil Arakkal\
 Josh Arnold\
 Vincent Boc\
 Zihao Cheng\
 Jacob Hernandez\
 Ipsa Parekh\
-Weiyi Zhou\
+Weiyi Zhou
