@@ -1,0 +1,11 @@
+.home-container {
+  margin: 0 auto;
+  margin-top: 20%;
+  width: 80%;
+}
+
+.main-header {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
+.App {
+  font-family: 'Noto Sans', sans-serif;
+  color: rgb(62, 247, 62);
+  text-align: center;
+}
+
+.round-border {
+  border-radius: 32px !important;
+}
+
+.left-round-border {
+  border-radius: 32px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  margin-right: -1px !important;
+}
+
+.right-round-border {
+  border-radius: 32px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  margin-left: -1px !important;
+}
+
+.ant-btn-primary {
+  border-color: rgb(13, 219, 13) !important;
+  background-color: rgb(62, 247, 62) !important;
+}

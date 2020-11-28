@@ -1,0 +1,98 @@
+.back-button {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.content-container {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.header {
+  text-align: left;
+}
+
+.ant-space {
+  width: 100%;
+}
+
+.ant-input,
+.ant-input-affix-wrapper {
+  border-color: #98ff98 !important;
+  color: rgb(62, 247, 62) !important;
+}
+
+.ant-input-focused,
+.ant-input-affix-wrapper-focused {
+  box-shadow: 0 0 0 2px rgb(62, 247, 62) !important;
+}
+
+.input {
+  margin: 0 auto;
+  width: 80%;
+}
+
+.input-full {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.delete {
+  color: red;
+}
+
+.button-group {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.alert {
+  text-align: 'left';
+  width: '80%';
+  margin: '0 auto';
+}
+
+.list-item {
+  padding: 6px;
+  border-bottom: 1px solid rgba(152, 255, 152, 0.5);
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: left;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color ease-in-out 1s, color ease-in-out 1s;
+}
+
+.list-item:hover {
+  background-color: rgba(61, 212, 61, 0.185);
+  color: rgb(3, 102, 25);
+}
+
+.list-item:last-child {
+  border-bottom: 0px;
+}
+
+.list-container {
+  border: 1px solid rgba(152, 255, 152, 0.9);
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.header {
+  font-size: 1.7em;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.sub-header {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.red {
+  color: rgb(160, 30, 73);
+}
