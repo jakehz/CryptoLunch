@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { message, Button, Input, Space, Col, Row, Alert, List } from 'antd';
 import {
@@ -83,12 +84,13 @@ const Host = () => {
   };
 
   const sendData = () => {
+    // json sent the address
     let payload = {};
     payload['bill_amount'] = billAmount;
     payload['wallet_address'] = wallet;
     payload['people'] = { ...people };
-
     // axios request here
+    axios.post('http://localhost:9000/makepool', payload)
     setTimeout(() => {
       setLoading(false);
       let fakeResults = {};
