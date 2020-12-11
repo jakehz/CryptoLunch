@@ -1,14 +1,10 @@
-var express = require('express');
-const nodemailer = require('nodemailer');
-const password = require('./password.js').password;
-var app = express();
-const myModule = require('./myModule.js')
-const port = 3000;
 
+const password = require('./password.js').password;
+const nodemailer = require("nodemailer");
 async function sendEmail(payTo, amt, payer, payerEmail, desc, address) {
     let transport = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
+        //host: 'smtp.ethereal.email',
+        service: 'gmail',
         secure: false,
         auth: {
            user: 'cryptolunch6@gmail.com',
@@ -31,23 +27,4 @@ async function sendEmail(payTo, amt, payer, payerEmail, desc, address) {
         }
     });
 }
-
-// timer = setInterval( function() { 
-//     // check state of smart contract, if not paid out continue
-//     if (paid) {
-//         clearInterval(timer) //stop timer
-//     }
-//     sendEmail(); 
-// }, 60000); // every hour
-
-
-app.get('/', function (req, res){
-    res.send('hello world')
-});
-
-app.listen(port, () =>  {
-    console.log("Server listening at http://localhost:" + port);
-
-});
-
-
+sendEmail("jake", "100", "ipsa", "jakejhdz@gmail.com", "pizza", "address");
