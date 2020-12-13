@@ -6,6 +6,7 @@ import {
   WalletFilled,
   MailFilled,
   PaperClipOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import NumericInput from './NumericInput';
@@ -27,6 +28,7 @@ const Host = () => {
   const [billAmount, setBillAmount] = useState('');
   const [totalBill, setTotalBill] = useState(0.0);
   const [wallet, setWallet] = useState('');
+  const [name, setName] = useState('');
   const [[page, direction], setPage] = useState([0, 0]);
   const [currAmount, setCurrAmount] = useState('');
   const [email, setEmail] = useState('');
@@ -42,20 +44,33 @@ const Host = () => {
     if (index === 0) {
       if (e.length !== 0) {
         if (error === 3) {
-          message.error('Please enter a wallet address.');
+          // message.error('Please enter a wallet address.');
           setError(2);
         } else if (error === 1) {
           setError(0);
+        } else if (error === 11) {
+          // wallet and name
+          // message.error('Please enter your name.');
+          setError(9);
+        } else if (error === 12) {
+          // message.error('Please fill out wallet and name fields');
+          setError(10);
         }
       }
       setBillAmount(e);
     } else if (index === 1) {
       if (e.target.value.length !== 0) {
         if (error === 3) {
-          message.error('Please enter a bill amount.');
+          // message.error('Please enter a bill amount.');
           setError(1);
         } else if (error === 2) {
           setError(0);
+        } else if (error === 10) {
+          // message.error('Please enter your name.');
+          setError(9);
+        } else if (error === 12) {
+          // message.error('Please fill out bill and name fields.');
+          setError(11);
         }
       }
       setWallet(e.target.value);
@@ -63,7 +78,7 @@ const Host = () => {
       if (e.target.value.length !== 0) {
         if (error === 6) {
           setError(5);
-          message.error('Please enter the amount owed.');
+          // message.error('Please enter the amount owed.');
         } else if (error === 4) {
           setError(0);
         }
@@ -72,13 +87,31 @@ const Host = () => {
     } else if (index === 3) {
       if (e.length !== 0) {
         if (error === 6) {
-          message.error("Please enter the person's email address");
+          // message.error("Please enter the person's email address");
           setError(4);
         } else if (error === 5) {
           setError(0);
         }
       }
       setCurrAmount(e);
+    } else if (index === 4) {
+      if (e.target.value.length !== 0) {
+        if (error === 11) {
+          // bill empty
+          // message.error('Please enter a bill amount.');
+          setError(1);
+        } else if (error === 10) {
+          // wallet empty
+          // message.error('Please enter a wallet address.');
+          setError(2);
+        } else if (error === 9) {
+          setError(0);
+        } else if (error === 12) {
+          // message.error('Please fill out wallet and bill fields.');
+          setError(3);
+        }
+      }
+      setName(e.target.value);
     }
   };
 
@@ -87,33 +120,33 @@ const Host = () => {
     payload['bill_amount'] = billAmount;
     payload['wallet_address'] = wallet;
     payload['people'] = { ...people };
-
+    payload['requester_name'] = name;
+    console.log(payload);
     // axios request here
     setTimeout(() => {
       setLoading(false);
-      let fakeResults = {};
-      for (var person in people) {
-        var result = '';
-        var characters =
-          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for (var i = 0; i < 34; i++) {
-          result += characters.charAt(
-            Math.floor(Math.random() * charactersLength)
-          );
-        }
-        fakeResults[person] = result;
-      }
-      setResult(fakeResults);
+      setResult(payload['people']);
     }, 2500);
   };
 
   const paginate = (newDirection) => {
     if (page + newDirection === 1) {
       // check to make sure both fields are filled
-      if (billAmount === '' && wallet === '') {
-        message.error('Please fill out both fields.');
+      if (billAmount === '' && wallet === '' && name === '') {
+        message.error('Please fill out all fields.');
+        setError(12);
+        return;
+      } else if (billAmount === '' && wallet === '') {
+        message.error('Please fill out wallet and bill fields.');
         setError(3);
+        return;
+      } else if (billAmount === '' && name === '') {
+        message.error('Please fill out bill and name fields.');
+        setError(11);
+        return;
+      } else if (wallet === '' && name === '') {
+        message.error('Please fill out wallet and name fields.');
+        setError(10);
         return;
       } else if (billAmount === '') {
         message.error('Please enter a bill amount.');
@@ -122,6 +155,10 @@ const Host = () => {
       } else if (wallet === '') {
         message.error('Please enter a wallet address.');
         setError(2);
+        return;
+      } else if (name === '') {
+        message.error('Please enter your name.');
+        setError(9);
         return;
       }
     } else if (page + newDirection === 2) {
@@ -137,7 +174,6 @@ const Host = () => {
         setError(0);
         return;
       }
-
       sendData();
     }
     setError(0);
@@ -145,7 +181,7 @@ const Host = () => {
   };
 
   const copyToClipboard = (person) => {
-    let str = result[person];
+    let str = person + ' - $' + result[person];
     const el = document.createElement('textarea');
     el.value = str;
     el.setAttribute('readonly', '');
@@ -165,7 +201,7 @@ const Host = () => {
     }
     let str = '';
     for (var key in result) {
-      str += `${key}, $${people[key]} - ${result[key]}\n`;
+      str += `${key} - $${people[key]}\n`;
     }
     const el = document.createElement('textarea');
     el.value = str;
@@ -221,7 +257,7 @@ const Host = () => {
   const removePerson = (person) => {
     let newPeople = { ...people };
     let currBill = parseFloat(totalBill) - parseFloat(newPeople[person]);
-    if (currBill < billAmount) {
+    if (currBill <= billAmount) {
       setError(0);
     }
     delete newPeople[person];
@@ -259,10 +295,16 @@ const Host = () => {
               <Space direction='vertical'>
                 <motion.div
                   animate={{
-                    scale: error === 1 || error === 3 ? [1.05, 1] : 1,
+                    scale:
+                      error === 1 || error === 3 || error === 11 || error === 12
+                        ? [1.05, 1]
+                        : 1,
                   }}
                   transition={{
-                    repeat: error === 1 || error === 3 ? Infinity : 0,
+                    repeat:
+                      error === 1 || error === 3 || error === 11 || error === 12
+                        ? Infinity
+                        : 0,
                     repeatType: 'mirror',
                   }}
                   className={'input'}>
@@ -277,10 +319,16 @@ const Host = () => {
                 </motion.div>
                 <motion.div
                   animate={{
-                    scale: error === 2 || error === 3 ? [1.05, 1] : 1,
+                    scale:
+                      error === 2 || error === 3 || error === 12 || error === 10
+                        ? [1.05, 1]
+                        : 1,
                   }}
                   transition={{
-                    repeat: error === 2 || error === 3 ? Infinity : 0,
+                    repeat:
+                      error === 2 || error === 3 || error === 12 || error === 10
+                        ? Infinity
+                        : 0,
                     repeatType: 'mirror',
                   }}
                   className={'input'}>
@@ -292,6 +340,38 @@ const Host = () => {
                     size='large'
                     placeholder={'Wallet Address'}
                     value={wallet}
+                  />
+                </motion.div>
+                <motion.div
+                  animate={{
+                    scale:
+                      error === 9 ||
+                      error === 11 ||
+                      error === 12 ||
+                      error === 10
+                        ? [1.05, 1]
+                        : 1,
+                  }}
+                  transition={{
+                    repeat:
+                      error === 9 ||
+                      error === 3 ||
+                      error === 11 ||
+                      error === 12 ||
+                      error === 10
+                        ? Infinity
+                        : 0,
+                    repeatType: 'mirror',
+                  }}
+                  className={'input'}>
+                  <Input
+                    className={'round-border'}
+                    maxLength={64}
+                    onChange={(e) => onChange(e, 4)}
+                    prefix={<UserOutlined />}
+                    size='large'
+                    placeholder={'Name'}
+                    value={name}
                   />
                 </motion.div>
                 <Button
@@ -439,8 +519,8 @@ const Host = () => {
               exit={{ x: -width, opacity: 0 }}
               transition={{ type: 'spring', duration: 0.6 }}>
               <header className={'header'}>
-                Pass it on!
-                <header className={'sub-header'}>(Click to copy)</header>
+                Deploying Smart Contract!
+                {/* <header className={'sub-header'}>(Click to copy)</header> */}
               </header>
               <AnimatePresence>
                 {loading && (
@@ -452,7 +532,7 @@ const Host = () => {
                     <Loader />
                   </motion.div>
                 )}
-                {!loading && (
+                {/* {!loading && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -493,6 +573,52 @@ const Host = () => {
                       </div>
                     </Space>
                   </motion.div>
+                )} */}
+                {!loading && (
+                  <div>
+                    <header className={'sub-header'}>
+                      Smart contract successfully deployed :)
+                      <br />
+                      Tell your friends to check their emails!
+                    </header>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ type: 'spring', duration: 1.5 }}>
+                      <Space direction='vertical'>
+                        <div className={'list-container'}>
+                          {Object.keys(result).map((person) => (
+                            <div
+                              key={person}
+                              className={'list-item'}
+                              onClick={() => copyToClipboard(person)}>
+                              <div> {person} </div>
+
+                              <div>${people[person]}</div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className={'button-group'}>
+                          <Button
+                            onClick={() => copyAllToClipboard(result)}
+                            type='primary'
+                            shape='round'
+                            icon={<PaperClipOutlined />}
+                            size='large'>
+                            Copy All
+                          </Button>
+                          <Button
+                            onClick={() => setPage([-1, 0])}
+                            type='primary'
+                            shape='round'
+                            size='large'>
+                            Start Over
+                          </Button>
+                        </div>
+                      </Space>
+                    </motion.div>
+                  </div>
                 )}
               </AnimatePresence>
             </motion.div>

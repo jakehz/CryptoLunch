@@ -3,9 +3,9 @@ import './Loader.css';
 
 const Loader = () => {
   return (
-    <div class='loader'>
+    <div className='loader'>
       <img
-        class='loader__animated'
+        className='loader__animated'
         src='https://image.flaticon.com/icons/svg/561/561071.svg'
         alt='Loading'
       />
