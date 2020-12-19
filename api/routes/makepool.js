@@ -42,17 +42,16 @@ router.post('/', function (req, res) {
         {data:bytecode, arguments:[amount_due_wei, wallet_address]}
     ).send(parameter).on('confirmation', () => {}).then((newContractInstance) => {
         console.log('Deployed Contract Address : ', newContractInstance.options.address);
-        contractAddress = newContractInstance.options.address;
-        
     })
     for (const amount in people) {
             console.log("sending emails:");
             console.log(people);
             console.log(people[amount]);
-            sendEmail(requester_name, people[amount], people, wallet_address);
+            sendEmail(requester_name, people[amount], people, 'DUMMY_ADDRESS');
+
         }
     // iterate through people email each address with the amount due  
     console.log(req.body);
-    res.send({"wasSuccessful": true});
+    res.send(people);
 })
 module.exports = router;
