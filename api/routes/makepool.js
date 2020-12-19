@@ -52,6 +52,6 @@ router.post('/', function (req, res) {
         }
     // iterate through people email each address with the amount due  
     console.log(req.body);
-    res.send(people);
-})
+    res.send({people: people});
+});
 module.exports = router;
