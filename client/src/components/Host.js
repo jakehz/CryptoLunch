@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { message, Button, Input, Space, Col, Row, Alert, List } from 'antd';
 import {
@@ -23,7 +24,7 @@ import Loader from './Loader';
 
 const Host = () => {
   const { width } = useWindowDimensions();
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState({});
   const [people, setPeople] = useState({});
   const [billAmount, setBillAmount] = useState('');
   const [totalBill, setTotalBill] = useState(0.0);
@@ -116,17 +117,20 @@ const Host = () => {
   };
 
   const sendData = () => {
+    // json sent the address
+    setLoading(true);
     let payload = {};
     payload['bill_amount'] = billAmount;
     payload['wallet_address'] = wallet;
     payload['people'] = { ...people };
     payload['requester_name'] = name;
-    console.log(payload);
     // axios request here
-    setTimeout(() => {
+    axios.post('/api/makepool', payload).then((res) => {
+      setResult(res.data);
       setLoading(false);
-      setResult(payload['people']);
-    }, 2500);
+      console.log('received');
+      console.log(res);
+    });
   };
 
   const paginate = (newDirection) => {
@@ -180,19 +184,34 @@ const Host = () => {
     setPage([page + newDirection, newDirection]);
   };
 
-  const copyToClipboard = (person) => {
-    let str = person + ' - $' + result[person];
-    const el = document.createElement('textarea');
-    el.value = str;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
+  const copyToClipboard = (person, address = false) => {
+    if (!address) {
+      let str = person + ' - $' + result[person];
+      const el = document.createElement('textarea');
+      el.value = str;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
 
-    message.info(`Copied ${person}'s key!`);
+      message.info(`Copied ${person}'s key!`);
+    } else {
+      let str = person + ' - $' + result['amount'];
+      const el = document.createElement('textarea');
+      el.value = str;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      message.info(`Copied address!`);
+    }
   };
 
   const copyAllToClipboard = (result) => {
@@ -200,7 +219,8 @@ const Host = () => {
       return;
     }
     let str = '';
-    for (var key in result) {
+    str += `Pay to ${result.address} - $${result.amount}\n`;
+    for (var key in result.people) {
       str += `${key} - $${people[key]}\n`;
     }
     const el = document.createElement('textarea');
@@ -574,7 +594,63 @@ const Host = () => {
                     </Space>
                   </motion.div>
                 )} */}
-                {!loading && (
+                {!loading && result.address !== null && (
+                  <div>
+                    <header className={'sub-header'}>
+                      Smart contract pending! :)
+                      <br />
+                      Please pay a small fee to deploy the smart contract to the
+                      address below!
+                    </header>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ type: 'spring', duration: 1.5 }}>
+                      <Space direction='vertical'>
+                        <div className={'list-container'}>
+                          <div
+                            className={'list-item'}
+                            onClick={() =>
+                              copyToClipboard(result.address, true)
+                            }>
+                            <div>Pay to: {result.address} </div>
+
+                            <div>${result.amount}</div>
+                          </div>
+                          {Object.keys(result.people).map((person) => (
+                            <div
+                              key={person}
+                              className={'list-item'}
+                              onClick={() => copyToClipboard(person)}>
+                              <div> {person} </div>
+
+                              <div>${people[person]}</div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className={'button-group'}>
+                          <Button
+                            onClick={() => copyAllToClipboard(result)}
+                            type='primary'
+                            shape='round'
+                            icon={<PaperClipOutlined />}
+                            size='large'>
+                            Copy All
+                          </Button>
+                          <Button
+                            onClick={() => setPage([-1, 0])}
+                            type='primary'
+                            shape='round'
+                            size='large'>
+                            Start Over
+                          </Button>
+                        </div>
+                      </Space>
+                    </motion.div>
+                  </div>
+                )}
+                {!loading && result.address === null && (
                   <div>
                     <header className={'sub-header'}>
                       Smart contract successfully deployed :)
@@ -588,7 +664,7 @@ const Host = () => {
                       transition={{ type: 'spring', duration: 1.5 }}>
                       <Space direction='vertical'>
                         <div className={'list-container'}>
-                          {Object.keys(result).map((person) => (
+                          {Object.keys(result.people).map((person) => (
                             <div
                               key={person}
                               className={'list-item'}
