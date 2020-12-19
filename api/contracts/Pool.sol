@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.0;
 
 // note: due to restrictions in solidity all transactions must 
 // be considered in wei. This may cause difficulty in the front end. 
@@ -19,7 +19,7 @@ contract Pool {
             uint256 leftOver = uint256(-1*due);
             // transfer the amount leftover
             if (address(this).balance > leftOver && leftOver != 0) {
-                msg.sender.transfer(uint256(leftOver));
+                payable(msg.sender).transfer(uint256(leftOver));
             }
             due = 0;
             if (address(this).balance > 0){

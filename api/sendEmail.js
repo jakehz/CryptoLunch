@@ -1,7 +1,7 @@
 
 const password = require('./password.js').password;
 const nodemailer = require("nodemailer");
-async function sendEmail(payTo, amt, payer, payerEmail, desc, address) {
+async function sendEmail(payTo, amt, payerEmail, address) {
     let transport = nodemailer.createTransport({
         //host: 'smtp.ethereal.email',
         service: 'gmail',
@@ -16,7 +16,7 @@ async function sendEmail(payTo, amt, payer, payerEmail, desc, address) {
         from: '"CryptoLunch" <cryptolunch6@gmail.com>', // Sender address
         to: payerEmail,         // recipient
         subject: 'Cryptolunch Payment ID', // Subject line
-        text: `Hi ${payer}! You owe ${payTo} ${amt} for ${desc}. You can make your payment here: ${address}` 
+        text: `You owe ${payTo} ${amt} You can make your payment here: ${address}` 
     };
 
     transport.sendMail(message, function(err, info) {
@@ -27,4 +27,4 @@ async function sendEmail(payTo, amt, payer, payerEmail, desc, address) {
         }
     });
 }
-sendEmail("jake", "100", "ipsa", "jakejhdz@gmail.com", "pizza", "address");
+module.exports = sendEmail
