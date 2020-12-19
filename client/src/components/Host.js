@@ -125,11 +125,9 @@ const Host = () => {
     payload['people'] = { ...people };
     payload['requester_name'] = name;
     // axios request here
-    axios.post('/api/makepool', payload).then((res) => {
+    axios.post('http://localhost:3000/api/makepool', payload).then((res) => {
       setResult(res.data);
       setLoading(false);
-      console.log('received');
-      console.log(res);
     });
   };
 
@@ -594,13 +592,13 @@ const Host = () => {
                     </Space>
                   </motion.div>
                 )} */}
-                {!loading && result.address !== null && (
+                {!loading && result.address !== undefined && (
                   <div>
                     <header className={'sub-header'}>
                       Smart contract pending! :)
                       <br />
                       Please pay a small fee to deploy the smart contract to the
-                      address below!
+                      address below! (Currency in Wei)
                     </header>
                     <motion.div
                       initial={{ opacity: 0 }}
@@ -616,7 +614,7 @@ const Host = () => {
                             }>
                             <div>Pay to: {result.address} </div>
 
-                            <div>${result.amount}</div>
+                            <div>{result.amount} wei</div>
                           </div>
                           {Object.keys(result.people).map((person) => (
                             <div
@@ -650,7 +648,7 @@ const Host = () => {
                     </motion.div>
                   </div>
                 )}
-                {!loading && result.address === null && (
+                {!loading && result.address === undefined && (
                   <div>
                     <header className={'sub-header'}>
                       Smart contract successfully deployed :)
